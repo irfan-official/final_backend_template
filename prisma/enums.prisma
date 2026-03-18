@@ -1,0 +1,17 @@
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum WaitingStatus {
+  ACCEPTED
+  ACTIVE
+  PENDING
+}
