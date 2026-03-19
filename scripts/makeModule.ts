@@ -10,8 +10,13 @@ const fileNames = [
   "utils",
 ];
 
-const moduleName = process.argv[2];
-const moduleParameter = process.argv[3];
+let moduleName = process.argv[2];
+
+for (let i = 0, lim = process.argv.length; i < lim; i++) {
+  if (process.argv[i][0] !== "-") {
+    moduleName = process.argv[i];
+  }
+}
 
 if (!moduleName) {
   console.log("❌ Please provide module name");
