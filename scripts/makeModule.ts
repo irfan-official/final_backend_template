@@ -11,6 +11,7 @@ const fileNames = [
 ];
 
 const moduleName = process.argv[2];
+const moduleParameter = process.argv[3];
 
 if (!moduleName) {
   console.log("❌ Please provide module name");
@@ -29,13 +30,12 @@ if (!validNameRegex.test(moduleName)) {
 const modulesDir = path.join(__dirname, "../src/app/modules");
 
 // 🔑 normalize function
-const normalize = (str: string) =>
-  str.toLowerCase().replace(/[-_]/g, "");
+const normalize = (str: string) => str.toLowerCase().replace(/[-_]/g, "");
 
 // 🔑 levenshtein distance
 const levenshteinDistance = (a: string, b: string): number => {
   const matrix = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0)
+    Array(b.length + 1).fill(0),
   );
 
   for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
@@ -48,7 +48,7 @@ const levenshteinDistance = (a: string, b: string): number => {
       matrix[i][j] = Math.min(
         matrix[i - 1][j] + 1,
         matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost
+        matrix[i - 1][j - 1] + cost,
       );
     }
   }
@@ -78,15 +78,17 @@ if (existingModules.includes(moduleName)) {
   process.exit(1);
 }
 
-// ❌ fuzzy match (97%)
-for (const existing of existingModules) {
-  const similarity = getSimilarity(moduleName, existing);
+if (moduleParameter !== "-f" && moduleParameter !== "-F") {
+  // ❌ fuzzy match (60%)
+  for (const existing of existingModules) {
+    const similarity = getSimilarity(moduleName, existing);
 
-  if (similarity >= 60) {
-    console.log(
-      `❌ Module name too similar to "${existing}" (${similarity.toFixed(2)}%)`
-    );
-    process.exit(1);
+    if (similarity >= 60) {
+      console.log(
+        `❌ Module name too similar to "${existing}" (${similarity.toFixed(2)}%)`,
+      );
+      process.exit(1);
+    }
   }
 }
 
@@ -95,8 +97,7 @@ const basePath = path.join(modulesDir, moduleName);
 fs.mkdirSync(basePath, { recursive: true });
 
 // 🔤 capitalize
-const capitalized =
-  moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+const capitalized = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
 
 // 🔑 content generator
 const getFileContent = (type: string): string => {
@@ -170,10 +171,7 @@ export const ${moduleName}Utils = {};
 for (const type of fileNames) {
   const file = `${moduleName}.${type}.ts`;
 
-  fs.writeFileSync(
-    path.join(basePath, file),
-    getFileContent(type)
-  );
+  fs.writeFileSync(path.join(basePath, file), getFileContent(type));
 }
 
 console.log(`✅ ${moduleName} module created successfully`);
