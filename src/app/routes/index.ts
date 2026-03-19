@@ -21,7 +21,7 @@ const moduleRoutes = [
     route: WaitingListRoutes,
   },
   {
-    path: "/dashboards",
+    path: "/dashboard",
     route: DashboardRoutes,
   },
 ];

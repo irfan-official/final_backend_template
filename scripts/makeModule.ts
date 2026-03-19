@@ -78,7 +78,7 @@ if (existingModules.includes(moduleName)) {
   process.exit(1);
 }
 
-if (moduleParameter !== "-f" && moduleParameter !== "-F") {
+if (!process.argv.includes("-f") && !process.argv.includes("-F")) {
   // ❌ fuzzy match (60%)
   for (const existing of existingModules) {
     const similarity = getSimilarity(moduleName, existing);
@@ -210,9 +210,9 @@ const toKebabCase = (str: string): string => {
     .replace(/[_\s]+/g, "-")
     .toLowerCase();
 
-    if(process.argv.includes("-np") || process.argv.includes("-e")){
-      return newStr
-    }
+  if (process.argv.includes("-np") || process.argv.includes("-e")) {
+    return newStr;
+  }
 
   return pluralizeWord(newStr);
 };
