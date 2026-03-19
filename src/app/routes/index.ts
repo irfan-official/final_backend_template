@@ -1,16 +1,31 @@
 import { Router } from "express";
-import { UserRoutes } from "../modules/user/user.route";
-import { AuthRoutes } from "../modules/auth/auth.route";
-// import { WaitingListRoutes } from "../modules/waitingList/waitingList.route"
+import  UserRoutes  from "../modules/user/user.route";
+import  AuthRoutes  from "../modules/auth/auth.route";
+import DashboardRoutes from "../modules/dashboard/dashboard.route";
+import  WaitingListRoutes  from "../modules/waitingList/waitingList.route"
+
 
 const router = Router();
 
-router.use("/users", UserRoutes);
-router.use("/auth", AuthRoutes);
-// router.use("/waiting-lists", WaitingListRoutes);
+const moduleRoutes = [
+  {
+    path: "/users",
+    route: UserRoutes,
+  },
+  {
+    path: "/auths",
+    route: AuthRoutes,
+  },
+  {
+    path: "/waiting-lists",
+    route: WaitingListRoutes,
+  },
+  {
+    path: "/dashboards",
+    route: DashboardRoutes,
+  },
+];
 
-
-
-
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
 export default router;

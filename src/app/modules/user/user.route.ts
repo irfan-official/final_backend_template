@@ -31,4 +31,4 @@ router.delete("/:userId", auth(UserRole.ADMIN), UserController.deleteUser);
 
 
 
-export const UserRoutes = router;
+export default router;

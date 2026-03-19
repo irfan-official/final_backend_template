@@ -174,4 +174,120 @@ for (const type of fileNames) {
   fs.writeFileSync(path.join(basePath, file), getFileContent(type));
 }
 
+const pluralizeWord = (word: string): string => {
+  const lower = word.toLowerCase();
+
+  // already plural (basic safe check)
+  if (lower.endsWith("s")) return word;
+
+  // irregulars
+  const irregulars: Record<string, string> = {
+    person: "people",
+    man: "men",
+    woman: "women",
+    child: "children",
+  };
+
+  if (irregulars[lower]) return irregulars[lower];
+
+  // category → categories
+  if (lower.endsWith("y") && !/[aeiou]y$/.test(lower)) {
+    return word.slice(0, -1) + "ies";
+  }
+
+  // box → boxes
+  if (/(s|x|z|ch|sh)$/.test(lower)) {
+    return word + "es";
+  }
+
+  return word + "s";
+};
+
+const toKebabCase = (str: string): string => {
+  let newStr = str
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .replace(/[_\s]+/g, "-")
+    .toLowerCase();
+
+    if(process.argv.includes("-np") || process.argv.includes("-e")){
+      return newStr
+    }
+
+  return pluralizeWord(newStr);
+};
+
+const updateRoutesIndex = () => {
+  const routesPath = path.join(__dirname, "../src/app/routes/index.ts");
+
+  if (!fs.existsSync(routesPath)) {
+    console.log("⚠️ routes/index.ts not found");
+    return;
+  }
+
+  let fileContent = fs.readFileSync(routesPath, "utf-8");
+
+  const capitalized = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+
+  const routePath = toKebabCase(moduleName);
+
+  const importStatement = `import ${capitalized}Routes from "../modules/${moduleName}/${moduleName}.route";`;
+
+  const routeObject = `  {
+    path: "/${routePath}",
+    route: ${capitalized}Routes,
+  },`;
+
+  // ✅ Prevent duplicate import
+  if (fileContent.includes(importStatement)) {
+    console.log("⚠️ Route already registered (import exists)");
+    return;
+  }
+
+  // ✅ 1. Insert import after last import
+  const importRegex = /import .* from .*;\n/g;
+  const imports = fileContent.match(importRegex);
+
+  if (imports && imports.length > 0) {
+    const lastImport = imports[imports.length - 1];
+
+    fileContent = fileContent.replace(
+      lastImport,
+      lastImport + importStatement + "\n",
+    );
+  } else {
+    console.log("⚠️ No import section found");
+    return;
+  }
+
+  // ✅ 2. Insert into moduleRoutes array
+  const moduleRoutesRegex = /const moduleRoutes = \[[\s\S]*?\];/;
+  const match = fileContent.match(moduleRoutesRegex);
+
+  if (!match) {
+    console.log("⚠️ moduleRoutes array not found");
+    return;
+  }
+
+  const existingBlock = match[0];
+
+  // ✅ Prevent duplicate route (use kebab-case!)
+  if (existingBlock.includes(`path: "/${routePath}"`)) {
+    console.log("⚠️ Route already exists in moduleRoutes");
+    return;
+  }
+
+  // ✅ Insert before closing ]
+  const updatedBlock = existingBlock.replace(/\]\s*;/, `${routeObject}\n];`);
+
+  fileContent = fileContent.replace(existingBlock, updatedBlock);
+
+  // ✅ Write back
+  fs.writeFileSync(routesPath, fileContent);
+
+  console.log(`✅ Route "/${routePath}" registered successfully`);
+};
+
+updateRoutesIndex();
+
 console.log(`✅ ${moduleName} module created successfully`);
