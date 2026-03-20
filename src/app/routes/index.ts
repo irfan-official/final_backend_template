@@ -2,6 +2,7 @@ import { Router } from "express";
 import  UserRoutes  from "../modules/user/user.route";
 import  AuthRoutes  from "../modules/auth/auth.route";
 import DashboardRoutes from "../modules/dashboard/dashboard.route";
+import MailRoutes from "../modules/mail/mail.route";
 import  WaitingListRoutes  from "../modules/waitingList/waitingList.route"
 
 
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: "/dashboard",
     route: DashboardRoutes,
+  },
+  {
+    path: "/mails",
+    route: MailRoutes,
   },
 ];
 
