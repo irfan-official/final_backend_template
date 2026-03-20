@@ -299,7 +299,7 @@ export default ({
 																	<tr>
 																		<td class="pad">
 																			<div style="color:#091f5c;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:center;mso-line-height-alt:19px;">
-																				<p style="margin: 0;">It will be valid only for ${expiryTime}</p>
+																				<p style="margin: 0;">It will be valid only for ${expiryTime}.</p>
 																			</div>
 																		</td>
 																	</tr>
@@ -348,6 +348,7 @@ export default ({
 																			</div>
 																		</td>
 																	</tr>
+																</table>
 																	${reportButtonStatus ? returnReportButton(reportLink) : ""}
 															</td>
 														</tr>
