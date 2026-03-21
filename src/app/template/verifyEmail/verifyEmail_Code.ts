@@ -1,5 +1,4 @@
-import * as URL from "../links"
-
+import * as URL from "../links";
 
 interface EmailTemplateParams {
   logoUrl?: string;

@@ -1,4 +1,4 @@
-import * as URL from "../links"
+import * as URL from "../links";
 
 interface EmailTemplateParams {
   logoUrl?: string;
@@ -306,7 +306,7 @@ export default ({
 																	</tr>
 																</table>
 																<div class="spacer_block block-10" style="height:20px;line-height:20px;font-size:1px;">&#8202;</div>
-																<table class="divider_block block-11" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+																															<table class="divider_block block-11" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 																	<tr>
 																		<td class="pad">
 																			<div class="alignment" align="center">
@@ -319,6 +319,7 @@ export default ({
 																		</td>
 																	</tr>
 																</table>
+																
 															</td>
 														</tr>
 													</table>

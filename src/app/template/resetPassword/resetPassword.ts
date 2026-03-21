@@ -58,6 +58,22 @@ const returnSection = (reportLink: string) => `
 					</table>
 `;
 
+const returnDividerLine = () => `
+																<table class="divider_block block-11" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+																	<tr>
+																		<td class="pad">
+																			<div class="alignment" align="center">
+																				<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+																					<tr>
+																						<td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #dddddd;"><span style="word-break: break-word;">&#8202;</span></td>
+																					</tr>
+																				</table>
+																			</div>
+																		</td>
+																	</tr>
+																</table>
+`;
+
 export default ({
   companyName = "",
   verifyResetPasswordUrl = "https://www.google.com",
@@ -333,20 +349,12 @@ export default ({
 																		</td>
 																	</tr>
 																</table>
+																
 																<div class="spacer_block block-10" style="height:20px;line-height:20px;font-size:1px;">&#8202;</div>
-																<table class="divider_block block-11" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-																	<tr>
-																		<td class="pad">
-																			<div class="alignment" align="center">
-																				<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-																					<tr>
-																						<td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #dddddd;"><span style="word-break: break-word;">&#8202;</span></td>
-																					</tr>
-																				</table>
-																			</div>
-																		</td>
-																	</tr>
-																</table>
+
+
+	                                 ${reportButtonStatus ? returnDividerLine() : ""}
+
 															</td>
 														</tr>
 													</table>
