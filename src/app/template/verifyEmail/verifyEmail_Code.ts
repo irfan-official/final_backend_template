@@ -1,3 +1,6 @@
+import * as URL from "../links"
+
+
 interface EmailTemplateParams {
   logoUrl?: string;
   companyName?: string;
@@ -25,7 +28,6 @@ const returnReportButton = (reportLink: string) => `
 `;
 
 export default ({
-  logoUrl = "https://08608989b4.imgdist.com/pub/bfra/4sssds1u/rf5/9tl/15h/LOGO.png",
   companyName = "",
   verifyEmailCode = "123456",
   expiryTime = "11 minutes",
@@ -218,7 +220,7 @@ export default ({
 																	<tr>
 																		<td class="pad" style="padding-bottom:20px;padding-top:20px;width:100%;">
 																			<div class="alignment" align="center">
-																				<div style="max-width: 133px;"><img src=${logoUrl} style="display: block; height: auto; border: 0; width: 100%;" width="133" alt title height="auto"></div>
+																				<div style="max-width: 133px;"><img src=${URL.company_logo} style="display: block; height: auto; border: 0; width: 100%;" width="133" alt title height="auto"></div>
 																			</div>
 																		</td>
 																	</tr>
@@ -250,7 +252,7 @@ export default ({
 																	<tr>
 																		<td class="pad" style="width:100%;">
 																			<div class="alignment" align="center">
-																				<div style="max-width: 93px;"><img src="https://08608989b4.imgdist.com/pub/bfra/4sssds1u/xi2/zjk/qsp/Slogo.png" style="display: block; height: auto; border: 0; width: 100%;" width="93" alt title height="auto"></div>
+																				<div style="max-width: 93px;"><img src=${URL.verify_email_url} style="display: block; height: auto; border: 0; width: 100%;" width="93" alt title height="auto"></div>
 																			</div>
 																		</td>
 																	</tr>
@@ -302,7 +304,7 @@ export default ({
 																<table class="paragraph_block block-9" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 																	<tr>
 																		<td class="pad">
-																			<div style="color:#091f5c;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:center;mso-line-height-alt:19px;">
+																			<div style="color:#091f5c;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:700;letter-spacing:0px;line-height:1.2;text-align:center;mso-line-height-alt:19px;">
 																				<p style="margin: 0;">This code will be valid only for ${expiryTime}.</p>
 																			</div>
 																		</td>
@@ -456,7 +458,7 @@ export default ({
 																	<tr>
 																		<td class="pad" style="width:100%;">
 																			<div class="alignment" align="center">
-																				<div style="max-width: 133px;"><img src=${logoUrl} style="display: block; height: auto; border: 0; width: 100%;" width="133" alt title height="auto"></div>
+																				<div style="max-width: 133px;"><img src=${URL.company_logo} style="display: block; height: auto; border: 0; width: 100%;" width="133" alt title height="auto"></div>
 																			</div>
 																		</td>
 																	</tr>
@@ -468,10 +470,10 @@ export default ({
 																			<div class="alignment" align="center">
 																				<table class="social-table" width="143px" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;">
 																					<tr>
-																						<td style="padding:0 0 0 0px;"><a href="https://www.facebook.com/" target="_blank"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-only-logo-white/facebook@2x.png" width="32" height="auto" alt="Facebook" title="facebook" style="display: block; height: auto; border: 0;"></a></td>
-																						<td style="padding:0 0 0 5px;"><a href="https://www.twitter.com/" target="_blank"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-only-logo-white/twitter@2x.png" width="32" height="auto" alt="Twitter" title="twitter" style="display: block; height: auto; border: 0;"></a></td>
-																						<td style="padding:0 0 0 5px;"><a href="https://www.linkedin.com/" target="_blank"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-only-logo-white/linkedin@2x.png" width="32" height="auto" alt="Linkedin" title="linkedin" style="display: block; height: auto; border: 0;"></a></td>
-																						<td style="padding:0 0 0 5px;"><a href="https://www.instagram.com/" target="_blank"><img src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-only-logo-white/instagram@2x.png" width="32" height="auto" alt="Instagram" title="instagram" style="display: block; height: auto; border: 0;"></a></td>
+																						<td style="padding:0 0 0 0px;"><a href="https://www.facebook.com/" target="_blank"><img src=${URL.facebook_url} width="32" height="auto" alt="Facebook" title="facebook" style="display: block; height: auto; border: 0;"></a></td>
+																						<td style="padding:0 0 0 5px;"><a href="https://www.twitter.com/" target="_blank"><img src=${URL.x_url} width="32" height="auto" alt="Twitter" title="twitter" style="display: block; height: auto; border: 0;"></a></td>
+																						<td style="padding:0 0 0 5px;"><a href="https://www.linkedin.com/" target="_blank"><img src=${URL.linkedin_url} width="32" height="auto" alt="Linkedin" title="linkedin" style="display: block; height: auto; border: 0;"></a></td>
+																						<td style="padding:0 0 0 5px;"><a href="https://www.instagram.com/" target="_blank"><img src=${URL.instagram_url} width="32" height="auto" alt="Instagram" title="instagram" style="display: block; height: auto; border: 0;"></a></td>
 																					</tr>
 																				</table>
 																			</div>
@@ -480,7 +482,7 @@ export default ({
 																</table>
 															</td>
 														</tr>
-													</table>
+													</table>s
 												</td>
 											</tr>
 										</tbody>

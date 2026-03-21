@@ -3,6 +3,7 @@ import  UserRoutes  from "../modules/user/user.route";
 import  AuthRoutes  from "../modules/auth/auth.route";
 import DashboardRoutes from "../modules/dashboard/dashboard.route";
 import MailRoutes from "../modules/mail/mail.route";
+import ServeFileRoutes from "../modules/serveFile/serveFile.route";
 import  WaitingListRoutes  from "../modules/waitingList/waitingList.route"
 
 
@@ -28,6 +29,10 @@ const moduleRoutes = [
   {
     path: "/mails",
     route: MailRoutes,
+  },
+  {
+    path: "/serve-files",
+    route: ServeFileRoutes,
   },
 ];
 
