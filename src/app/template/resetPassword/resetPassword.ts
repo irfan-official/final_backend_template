@@ -79,7 +79,7 @@ export default ({
   verifyResetPasswordUrl = "https://www.google.com",
   expiryTime = "11 minutes",
   userName = "User",
-  reportButtonStatus = true,
+  reportButtonStatus = false,
   reportLink = "https://www.google.com",
 }: EmailTemplateParams = {}) => {
   return `
