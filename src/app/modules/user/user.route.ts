@@ -23,10 +23,10 @@ router.patch(
 );
 
 // FIND USER BY ID (protected)
-router.get("/:userId", auth(UserRole.ADMIN), UserController.getUserById);
+router.get("/:userId", validateRequest(userValidation.checkUserIdSchema), auth(UserRole.ADMIN), UserController.getUserById);
 
 // DELETE USER BY ID (protected)
-router.delete("/:userId", auth(UserRole.ADMIN), UserController.deleteUser);
+router.delete("/:userId", validateRequest(userValidation.checkUserIdSchema), auth(UserRole.ADMIN), UserController.deleteUser);
 
 
 

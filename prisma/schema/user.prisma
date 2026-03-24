@@ -1,14 +1,14 @@
 model User {
-  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
-  name               String
-  email              String     @unique
-  phoneNumber        String?    @unique
-  password           String
-  imageUrl           String?    @default("https://static.vecteezy.com/ti/vecteur-libre/p1/67451107-avatar-defaut-utilisateur-profil-icone-social-medias-profil-image-symbole-la-personne-icone-le-sexe-neutre-contour-rond-forme-signe-utilisateur-compte-dp-symbole-isole-sur-blanc-arriere-plan-illustration-vectoriel.jpg")
-  role               UserRole
-  status             UserStatus @default(ACTIVE)
-  passwordResetToken String?
+  id                  String     @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  email               String     @unique
+  phoneNumber         String?    @unique
+  password            String
+  imageUrl            String?    @default("https://static.vecteezy.com/ti/vecteur-libre/p1/67451107-avatar-defaut-utilisateur-profil-icone-social-medias-profil-image-symbole-la-personne-icone-le-sexe-neutre-contour-rond-forme-signe-utilisateur-compte-dp-symbole-isole-sur-blanc-arriere-plan-illustration-vectoriel.jpg")
+  role                UserRole
+  status              UserStatus @default(ACTIVE)
+  passwordResetToken  String?
   passwordResetExpiry DateTime?
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
 }

@@ -11,10 +11,6 @@ const globalErrorHandler = (
     next: NextFunction
 ) => {
 
-    if (config.setup.node_env === "development") {
-        console.log("server error", err);
-    }
-
     let statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
     let message = err.message || "Something went wrong!";
     let error = err;

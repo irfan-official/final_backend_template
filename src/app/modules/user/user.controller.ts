@@ -48,7 +48,7 @@ export const updateUser = catchAsync(async (req: Request & { user?: any }, res: 
 
 // delete user profile
 export const deleteUser = catchAsync(async (req: Request, res: Response) => {
-    const user = await UserService.deleteUser(req.params.id);
+    const user = await UserService.deleteUser(req.params.id as string);
     sendResponse(res, {
         statusCode: 200,
         success: true,

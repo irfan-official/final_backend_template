@@ -2,11 +2,11 @@ import { Request } from "express";
 import ApiError from "../../errors/apiError";
 import httpStatus from "http-status";
 import { prisma } from "../../prisma/prisma";
+import { Prisma, WaitingStatus } from "@prisma/client";
 
 export const createWaitingList = async (req: Request) => {
   const { email } = req.body;
 
-  // Check if email already exists
   const existing = await prisma.waitingList.findFirst({
     where: { email },
   });
@@ -19,7 +19,10 @@ export const createWaitingList = async (req: Request) => {
   }
 
   const waitingList = await prisma.waitingList.create({
-    data: { email },
+    data: {
+      email,
+      status: "ACTIVE", // explicit (optional, since default exists)
+    },
   });
 
   return waitingList;
@@ -27,25 +30,30 @@ export const createWaitingList = async (req: Request) => {
 
 export const getWaitingList = async (req: Request) => {
   const page  = Number(req.query.page)  || 1;
-  const limit = Number(req.query.limit) || 1000000000;
+  const limit = Number(req.query.limit) || 10;
   const skip  = (page - 1) * limit;
 
   const search = req.query.search as string | undefined;
+  const status = req.query.status as WaitingStatus | undefined;
 
-  const whereCondition = search
-    ? {
-        OR: [
-          { email: { contains: search, mode: "insensitive" as const } },
-          { phone: { contains: search, mode: "insensitive" as const } },
-        ],
-      }
-    : {};
+  const whereCondition: Prisma.WaitingListWhereInput = {
+    ...(search && {
+      email: {
+        contains: search,
+        mode: Prisma.QueryMode.insensitive, // ✅ FIX
+      },
+    }),
+
+    ...(status && {
+      status, // ✅ typed enum
+    }),
+  };
 
   const [waitingList, total] = await Promise.all([
     prisma.waitingList.findMany({
-      where:   whereCondition,
+      where: whereCondition,
       skip,
-      take:    limit,
+      take: limit,
       orderBy: { createdAt: "desc" },
     }),
     prisma.waitingList.count({ where: whereCondition }),
@@ -63,8 +71,9 @@ export const getWaitingList = async (req: Request) => {
 };
 
 export const updateWaitingList = async (req: Request) => {
-  const { id }          = req.params;
-  const { email, phone } = req.body;
+
+  const id = req.params.id as string
+  const { email, status } = req.body;
 
   const existing = await prisma.waitingList.findUnique({
     where: { id },
@@ -74,10 +83,13 @@ export const updateWaitingList = async (req: Request) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Waiting list entry not found.");
   }
 
-  // If email is being changed, check it's not taken by another entry
+  // Email uniqueness check
   if (email && email !== existing.email) {
     const emailTaken = await prisma.waitingList.findFirst({
-      where: { email, id: { not: id } },
+      where: {
+        email,
+        id: { not: id },
+      },
     });
 
     if (emailTaken) {
@@ -92,7 +104,7 @@ export const updateWaitingList = async (req: Request) => {
     where: { id },
     data: {
       ...(email && { email }),
-      ...(phone && { phone }),
+      ...(status && { status }), // enum: ACCEPTED | ACTIVE | PENDING
     },
   });
 
@@ -100,7 +112,8 @@ export const updateWaitingList = async (req: Request) => {
 };
 
 export const deleteWaitingList = async (req: Request) => {
-  const { id } = req.params;
+  
+  const id = req.params.id as string
 
   const existing = await prisma.waitingList.findUnique({
     where: { id },
