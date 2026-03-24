@@ -7,9 +7,9 @@ import emailSender from "../../utils/emailSender";
 
 export const sendMail = async (payload: any) => {
   await emailSender({
-    subject: "Test mail 02",
-    html: resetPassword(),
-    email: "irfan.official.work24@gmail.com",
+    subject: "Test mail 03",
+    html: verifyEmail_Code(),
+    email: "blackmaster2465@gmail.com",
   });
 
   return {};

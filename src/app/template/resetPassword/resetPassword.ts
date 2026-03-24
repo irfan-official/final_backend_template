@@ -330,8 +330,8 @@ export default ({
 																<table class="button_block block-8" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 																	<tr>
 																		<td class="pad" style="padding-bottom:5px;padding-left:25px;padding-right:25px;padding-top:5px;text-align:center;">
-																			<div class="alignment" align="center"><a href="https://www.google.com/" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://www.google.com/"  style="height:50px;width:237px;v-text-anchor:middle;" arcsize="18%" fillcolor="#0095ff">
+																			<div class="alignment" align="center"><a href=${verifyResetPasswordUrl} target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href=${verifyResetPasswordUrl}  style="height:50px;width:237px;v-text-anchor:middle;" arcsize="18%" fillcolor="#0095ff">
 <v:stroke dashstyle="Solid" weight="0px" color="#0095ff"/>
 <w:anchorlock/>
 <v:textbox inset="0px,0px,0px,0px">

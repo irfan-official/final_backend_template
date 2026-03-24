@@ -65,6 +65,24 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
     });
 });
 
+export const checkResetPasswordToken = catchAsync(async (req: Request, res: Response) => {
+
+    const token = req.params.token as string;
+
+    if (!token) {
+        throw new ApiError(HttpStatus.UNAUTHORIZED, "Reset token is required!");
+    }
+
+    const result = await AuthServices.checkResetPasswordToken(token);
+
+    sendResponse(res, {
+        statusCode: HttpStatus.OK,
+        success: true,
+        message: "Reset password token checked successfully!",
+        data: result,
+    });
+});
+
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
     const token = req.params.token as string;
 

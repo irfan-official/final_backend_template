@@ -1,6 +1,10 @@
 import fs from "fs";
 import path from "path";
 
+/* =======================
+   CONFIG
+======================= */
+
 const fileNames = [
   "controller",
   "service",
@@ -10,20 +14,17 @@ const fileNames = [
   "utils",
 ];
 
-let moduleName = process.argv[2];
+const moduleName = process.argv[2];
 
-for (let i = 0, lim = process.argv.length; i < lim; i++) {
-  if (process.argv[i][0] !== "-") {
-    moduleName = process.argv[i];
-  }
-}
+/* =======================
+   VALIDATION
+======================= */
 
 if (!moduleName) {
   console.log("❌ Please provide module name");
   process.exit(1);
 }
 
-// ✅ regex validation
 const validNameRegex = /^[a-z][a-zA-Z0-9_-]*$/;
 
 if (!validNameRegex.test(moduleName)) {
@@ -32,79 +33,77 @@ if (!validNameRegex.test(moduleName)) {
   process.exit(1);
 }
 
-const modulesDir = path.join(__dirname, "../src/app/modules");
+/* =======================
+   HELPERS
+======================= */
 
-// 🔑 normalize function
-const normalize = (str: string) => str.toLowerCase().replace(/[-_]/g, "");
+const pluralizeWord = (word: string): string => {
+  const lower = word.toLowerCase();
 
-// 🔑 levenshtein distance
-const levenshteinDistance = (a: string, b: string): number => {
-  const matrix = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0),
-  );
+  if (lower.endsWith("s")) return word;
 
-  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  const irregulars: Record<string, string> = {
+    person: "people",
+    man: "men",
+    woman: "women",
+    child: "children",
+  };
 
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+  if (irregulars[lower]) return irregulars[lower];
 
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost,
-      );
-    }
+  if (lower.endsWith("y") && !/[aeiou]y$/.test(lower)) {
+    return word.slice(0, -1) + "ies";
   }
 
-  return matrix[a.length][b.length];
+  if (/(s|x|z|ch|sh)$/.test(lower)) {
+    return word + "es";
+  }
+
+  return word + "s";
 };
 
-// 🔑 similarity %
-const getSimilarity = (a: string, b: string): number => {
-  const normA = normalize(a);
-  const normB = normalize(b);
+const toKebabCase = (str: string): string => {
+  const base = str
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .replace(/[_\s]+/g, "-")
+    .toLowerCase();
 
-  const distance = levenshteinDistance(normA, normB);
-  const maxLen = Math.max(normA.length, normB.length);
+  // flags: -np (no plural) OR -e (exact)
+  if (process.argv.includes("-np") || process.argv.includes("-e")) {
+    return base;
+  }
 
-  return (1 - distance / maxLen) * 100;
+  return pluralizeWord(base);
 };
 
-// ✅ check existing modules
+const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
+/* =======================
+   MODULE EXIST CHECK
+======================= */
+
+const modulesDir = path.join(__dirname, "../src/app/modules");
+
 const existingModules = fs.existsSync(modulesDir)
   ? fs.readdirSync(modulesDir)
   : [];
 
-// ❌ exact match
 if (existingModules.includes(moduleName)) {
   console.log("❌ Module already exists");
   process.exit(1);
 }
 
-if (!process.argv.includes("-f") && !process.argv.includes("-F")) {
-  // ❌ fuzzy match (60%)
-  for (const existing of existingModules) {
-    const similarity = getSimilarity(moduleName, existing);
+/* =======================
+   CREATE MODULE FILES
+======================= */
 
-    if (similarity >= 60) {
-      console.log(
-        `❌ Module name too similar to "${existing}" (${similarity.toFixed(2)}%)`,
-      );
-      process.exit(1);
-    }
-  }
-}
-
-// ✅ create folder
 const basePath = path.join(modulesDir, moduleName);
 fs.mkdirSync(basePath, { recursive: true });
 
-// 🔤 capitalize
-const capitalized = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+const capitalized = capitalize(moduleName);
 
-// 🔑 content generator
 const getFileContent = (type: string): string => {
   switch (type) {
     case "controller":
@@ -139,11 +138,8 @@ export const get${capitalized} = async (payload: any) => {
       return `
 import { Router } from "express";
 import * as ${capitalized}Controller from "./${moduleName}.controller";
-// import auth from "../../middlewares/auth";
 
 const router = Router();
-
-// router.use(auth());
 
 router.get("/", ${capitalized}Controller.get${capitalized});
 
@@ -172,55 +168,15 @@ export const ${moduleName}Utils = {};
   }
 };
 
-// 🚀 create files
+// create files
 for (const type of fileNames) {
   const file = `${moduleName}.${type}.ts`;
-
   fs.writeFileSync(path.join(basePath, file), getFileContent(type));
 }
 
-const pluralizeWord = (word: string): string => {
-  const lower = word.toLowerCase();
-
-  // already plural (basic safe check)
-  if (lower.endsWith("s")) return word;
-
-  // irregulars
-  const irregulars: Record<string, string> = {
-    person: "people",
-    man: "men",
-    woman: "women",
-    child: "children",
-  };
-
-  if (irregulars[lower]) return irregulars[lower];
-
-  // category → categories
-  if (lower.endsWith("y") && !/[aeiou]y$/.test(lower)) {
-    return word.slice(0, -1) + "ies";
-  }
-
-  // box → boxes
-  if (/(s|x|z|ch|sh)$/.test(lower)) {
-    return word + "es";
-  }
-
-  return word + "s";
-};
-
-const toKebabCase = (str: string): string => {
-  let newStr = str
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
-    .replace(/[_\s]+/g, "-")
-    .toLowerCase();
-
-  if (process.argv.includes("-np") || process.argv.includes("-e")) {
-    return newStr;
-  }
-
-  return pluralizeWord(newStr);
-};
+/* =======================
+   UPDATE ROUTES INDEX
+======================= */
 
 const updateRoutesIndex = () => {
   const routesPath = path.join(__dirname, "../src/app/routes/index.ts");
@@ -232,8 +188,6 @@ const updateRoutesIndex = () => {
 
   let fileContent = fs.readFileSync(routesPath, "utf-8");
 
-  const capitalized = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
-
   const routePath = toKebabCase(moduleName);
 
   const importStatement = `import ${capitalized}Routes from "../modules/${moduleName}/${moduleName}.route";`;
@@ -243,29 +197,33 @@ const updateRoutesIndex = () => {
     route: ${capitalized}Routes,
   },`;
 
-  // ✅ Prevent duplicate import
+  // ❌ duplicate import
   if (fileContent.includes(importStatement)) {
     console.log("⚠️ Route already registered (import exists)");
     return;
   }
 
-  // ✅ 1. Insert import after last import
-  const importRegex = /import .* from .*;\n/g;
-  const imports = fileContent.match(importRegex);
+  /* ===== INSERT IMPORT (robust) ===== */
+  const lines = fileContent.split("\n");
 
-  if (imports && imports.length > 0) {
-    const lastImport = imports[imports.length - 1];
+  let lastImportIndex = -1;
 
-    fileContent = fileContent.replace(
-      lastImport,
-      lastImport + importStatement + "\n",
-    );
-  } else {
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim().startsWith("import")) {
+      lastImportIndex = i;
+    }
+  }
+
+  if (lastImportIndex === -1) {
     console.log("⚠️ No import section found");
     return;
   }
 
-  // ✅ 2. Insert into moduleRoutes array
+  lines.splice(lastImportIndex + 1, 0, importStatement);
+
+  fileContent = lines.join("\n");
+
+  /* ===== INSERT ROUTE ===== */
   const moduleRoutesRegex = /const moduleRoutes = \[[\s\S]*?\];/;
   const match = fileContent.match(moduleRoutesRegex);
 
@@ -276,22 +234,26 @@ const updateRoutesIndex = () => {
 
   const existingBlock = match[0];
 
-  // ✅ Prevent duplicate route (use kebab-case!)
   if (existingBlock.includes(`path: "/${routePath}"`)) {
     console.log("⚠️ Route already exists in moduleRoutes");
     return;
   }
 
-  // ✅ Insert before closing ]
-  const updatedBlock = existingBlock.replace(/\]\s*;/, `${routeObject}\n];`);
+  const updatedBlock = existingBlock.replace(
+    /\]\s*;/,
+    `${routeObject}\n];`
+  );
 
   fileContent = fileContent.replace(existingBlock, updatedBlock);
 
-  // ✅ Write back
   fs.writeFileSync(routesPath, fileContent);
 
   console.log(`✅ Route "/${routePath}" registered successfully`);
 };
+
+/* =======================
+   RUN
+======================= */
 
 updateRoutesIndex();
 

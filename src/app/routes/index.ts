@@ -15,7 +15,7 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
-    path: "/auths",
+    path: "/auth",
     route: AuthRoutes,
   },
   {
@@ -39,3 +39,4 @@ const moduleRoutes = [
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
 export default router;
+
