@@ -50,9 +50,11 @@ export default {
     },
 
     aws: {
+        account: {
+            access_key: process.env.ACCOUNT_ACCESS_KEY,
+            secret_key: process.env.ACCOUNT_SECRET_KEY,
+        },
         s3: {
-            access_key: process.env.S3_ACCESS_KEY,
-            secret_key: process.env.S3_SECRET_KEY,
             region: process.env.S3_REGION,
             bucket_name: process.env.S3_BUCKET_NAME,
         },
@@ -80,7 +82,12 @@ export default {
     },
 
     bcrypt: {
-      salt_rounds: Number(process.env.SALT_ROUNDS),
+        salt_rounds: Number(process.env.SALT_ROUNDS),
+    },
+
+    stripe: {
+        secret_key: process.env.STRIPE_SECRET_KEY,
+        webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
     }
 
 }

@@ -5,6 +5,7 @@ import DashboardRoutes from "../modules/dashboard/dashboard.route";
 import MailRoutes from "../modules/mail/mail.route";
 import ServeFileRoutes from "../modules/serveFile/serveFile.route";
 import  WaitingListRoutes  from "../modules/waitingList/waitingList.route"
+import PaymentsRoutes from "../modules/payments/payments.route";
 
 
 const router = Router();
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: "/serve-files",
     route: ServeFileRoutes,
+  },
+  {
+    path: "/payments",
+    route: PaymentsRoutes,
   },
 ];
 
