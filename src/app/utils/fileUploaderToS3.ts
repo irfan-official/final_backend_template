@@ -21,8 +21,8 @@ dotenv.config({ path: path.join(process.cwd(), ".env") });
 const s3Client = new S3Client({
   region: config.aws.s3.region as string,
   credentials: {
-    accessKeyId: config.aws.s3.access_key as string,
-    secretAccessKey: config.aws.s3.secret_key as string,
+    accessKeyId: config.aws.account.access_key as string,
+    secretAccessKey: config.aws.account.secret_key as string,
   },
 });
 
