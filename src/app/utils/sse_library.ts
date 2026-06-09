@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-class SSEService {
+export class SSEService {
     private clients = new Set<Response>();
 
     addClient(res: Response) {
@@ -25,4 +25,4 @@ class SSEService {
     }
 }
 
-export const sseService = new SSEService();
+export const shared_sseConnection = new SSEService();
