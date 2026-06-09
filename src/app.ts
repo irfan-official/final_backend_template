@@ -64,10 +64,10 @@ app.post("/events", (req: Request, res: Response) => {
 
 
 function sendNotification(event: string, userId: string, data: any) {
-    const sseService = UserIdBasedSSE[userId]
+    const user_sseConnection = UserIdBasedSSE[userId]
 
     if (UserIdBasedSSE[userId]) {
-        sseService.emit(event, data);
+        user_sseConnection.emit(event, data);
     }
 }
 
@@ -77,20 +77,20 @@ app.get("/events", (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    const sseService = new SSEService()
+    const sseConnection = new SSEService()
 
     const UserId = req.query.id as string || ""
-    UserIdBasedSSE[UserId] = sseService
+    UserIdBasedSSE[UserId] = sseConnection
 
-    sseService.addClient(res);
+    sseConnection.addClient(res);
 
     // Initial event
-    sseService.emit("connected", {
+    sseConnection.emit("connected", {
         message: "SSE Connected",
     });
 
     req.on("close", () => {
-        sseService.removeClient(res);
+        sseConnection.removeClient(res);
         res.end();
     });
 });
